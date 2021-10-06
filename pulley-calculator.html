@@ -1,0 +1,1976 @@
+{%extends 'Physics/physics_base.html'%}
+{%load static%}
+{%block meta%}
+<!-- HTML Defaults Broweser -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Bootstrap Stylesheet and Jquery, Google APIS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+<!-- Online Calculator Guru Site Fevicon -->
+<link rel="shortcut icon" href="https://onlinecalculator.guru/static/images/logo/Online-Calculator-Guru-Fevicon.png"
+    type="icon">
+<!-- Online Calculator Guru Project Style Sheet -->
+{%block css%}
+<link rel="stylesheet" href="https://physicscalc.com/static/style.css">
+{%endblock%}
+<!-- Bootstrap CSS -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+    integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+<!-- Meta Title, Description and Canonical URL Starts --->
+<title>Pulley Calculator</title>
+<meta name="description"
+    content="The Pulley Calculator helps you to find various parameters of pulley system." />
+<link rel="canonical" href="{{request.build_absolute_uri}}">
+<!-- Meta Title, Description and Canonical URL ENDS --->
+
+<!-- OPEN GRAPH CONFIGURATIONS STARTS -->
+<!--  FACEBOOK CONFIGURATION STARTS  -->
+<meta content="https://www.facebook.com/OnlineCalculator-Guru-131572098650589/" property="og:url" />
+<meta property="og:title" content="Pulley Calculator" />
+<meta property="og:description"
+    content="The Pulley Calculator helps you to find various parameters of pulley system." />
+<meta content="" property="og:site_name" />
+<meta content="{{request.scheme}}://{{request.get_host}}/static/images/Physics/acceleration-calculator.jpeg"
+    property="og:image" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:height" content="435" />
+<meta property="og:image:width" content="354" />
+<!--  FACEBOOK CONFIGURATION ENDS  -->
+<!-- TWITTER CARD CONFIGURATION STARTS  -->
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="https://twitter.com/onlinecalculator" />
+<meta name="twitter:title" content="Pulley Calculator" />
+<meta name="twitter:description" content="The Pulley Calculator helps you to find various parameters of pulley system." />
+<meta name="twitter:image:src"
+    content="{{request.scheme}}://{{request.get_host}}/static/images/Physics/acceleration-calculator.jpeg" />
+<meta property="twitter:image:height" content="435" />
+<meta property="twitter:image:width" content="354" />
+<!-- TWITTER CARD CONFIGURATION ENDS  -->
+<!--  LINKEDIN CONFIGURATION STARTS-->
+<meta property='og:title' content="Pulley Calculator" />
+<meta property='og:image'
+    content="{{request.scheme}}://{{request.get_host}}/static/images/Physics/acceleration-calculator.jpeg" />
+<meta property='og:description' content=" The Pulley Calculator helps you to find various parameters of pulley system." />
+<meta property='og:url' content="https://www.linkedin.com/in/onlinecalculator/" />
+<!-- end of linkedin CONFIGURATIONS ENDS -->
+<!-- OPEN GRAPH CONFIGURATION ENDS -->
+<!-- FAQ SCHEMA STARTS -->
+
+{%endblock%}
+
+{%block content%}
+
+<style>
+    input {
+        text-align: right;
+    }
+</style>
+
+{% if a and w and t or w and v and r %}
+<script>
+    $(document).ready(function () {
+
+        $("#hassle").click();
+
+
+    });
+
+
+</script>
+
+<button type="button" hidden id="hassle" onclick="location.href='#angular_velocity'">ans1</button>
+{% endif %}
+
+
+<div class="container" style="height: auto !important;">
+    <div class="card c1">
+        <div class="card-header">
+            <h1 class="h1">Pulley Calculator</h1>
+        </div>
+        <div class="card-body">
+            <ul class="messages">
+                {% for message in messages %}
+                <p {% if message.tags %} id="message_container" class="alert alert-danger text-center" {% endif %}
+                    style="color:red">{{ message }}</p>
+                {% endfor %}
+            </ul>
+            <form method="POST" action="{% url 'pulley_calculator' %}" id="my_form">
+                {% csrf_token %}
+
+                <div class="col-auto">
+                    <div class="input-group mb-2">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text"><strong>Choose Calculation</strong></div>
+                        </div>
+
+                        <select name="given_form1" id="inlineFormInputGroup" class="form-control"
+                            onchange="this.form.submit();" autofocus="">
+
+                            {% if given_form1 == 'form1' %}
+                            <option value="form1" selected="selected"> Find Drive torque : | Given Angular velocity,
+                                and Transmitting power</option>
+                            {% else %}
+                            <option value="form1"> Find Drive torque : | Given Angular velocity,
+                                and Transmitting power</option>
+                            {% endif %}
+
+                            {% if given_form1 == 'form2' %}
+                            <option value="form2" selected="selected"> Find Angular velocity : | Given Drive torque,
+                                and Transmitting power</option>
+                            {% else %}
+                            <option value="form2"> Find Angular velocity : | Given Drive torque,
+                                and Transmitting power</option>
+                            {% endif %}
+
+                            {% if given_form1 == 'form3' %}
+                            <option value="form3" selected="selected"> Find Transmitting power : | Given Drive torque,
+                                and Angular velocity</option>
+                            {% else %}
+                            <option value="form3"> Find Transmitting power : | Given Drive torque,
+                                and Angular velocity</option>
+                            {% endif %}
+
+                        </select>
+
+                    </div>
+
+                    {% if given_form1 != 'form1' %}
+                    <div class="input-group mb-2 mt-3">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text"><strong>Drive torque(T1)</strong></div>
+                        </div>
+                        <input type="text" oninput="validateNumber(this);" class="form-control" name="t1"
+                            id="inlineFormInputGroup" value={% if t1 %} {{t1}} {% else %} 14.324 {% endif %}>
+                        <select class="select form-control" id="inlineFormInputGroup" name="t1_op">
+
+                            {% if t1_op == 'Nm' %}
+                            <option value="Nm" selected="selected">Newton meters(Nm)</option>
+                            {% else %}
+                            <option value="Nm">Newton meters(Nm)</option>
+                            {% endif %}
+
+                            {% if t1_op == 'kg-cm' %}
+                            <option value="kg-cm" selected="selected">kilogram centimeters(kg-cm)</option>
+                            {% else %}
+                            <option value="kg-cm">kilogram centimeters(kg-cm)</option>
+                            {% endif %}
+
+                            {% if t1_op == 'J/rad' %}
+                            <option value="J/rad" selected="selected">joules per radians(J/rad)</option>
+                            {% else %}
+                            <option value="J/rad">joules per radians(J/rad)</option>
+                            {% endif %}
+
+                            {% if t1_op == 'ft-lb' %}
+                            <option value="ft-lb" selected="selected">foot-pounds(ft-lb)</option>
+                            {% else %}
+                            <option value="ft-lb">foot-pounds(ft-lb)</option>
+                            {% endif %}
+
+                            {% if t1_op == 'Ncm' %}
+                            <option value="Ncm" selected="selected">Newton centimeters(Ncm)</option>
+                            {% else %}
+                            <option value="Ncm">Newton centimeters(Ncm)</option>
+                            {% endif %}
+
+                            {% if t1_op == 'Nmm' %}
+                            <option value="Nmm" selected="selected">Newton millimeters(Nmm)</option>
+                            {% else %}
+                            <option value="Nmm">Newton millimeters(Nmm)</option>
+                            {% endif %}
+                        </select>
+                    </div>
+                    {% endif %}
+
+                    {% if given_form1 != 'form2' %}
+                    <div class="input-group mb-2 mt-3">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text"><strong>Angular velocity(v1)</strong></div>
+                        </div>
+                        <input type="text" oninput="validateNumber(this);" class="form-control" name="v1"
+                            id="inlineFormInputGroup" value={% if v1 %} {{v1}} {% else %} 35 {% endif %}>
+                        <select class="select form-control" id="inlineFormInputGroup" name="v1_op">
+
+                            {% if v1_op == 'RPM' %}
+                            <option value="RPM" selected="selected">Revolutions per minute(RPM)</option>
+                            {% else %}
+                            <option value="RPM">Revolutions per minute(RPM)</option>
+                            {% endif %}
+
+                            {% if v1_op == 'Hz' %}
+                            <option value="Hz" selected="selected">Hertz(Hz)</option>
+                            {% else %}
+                            <option value="Hz">Hertz(Hz)</option>
+                            {% endif %}
+
+                            {% if v1_op == 'kHz' %}
+                            <option value="kHz" selected="selected">kiloHertz(kHz)</option>
+                            {% else %}
+                            <option value="kHz">kiloHertz(kHz)</option>
+                            {% endif %}
+
+                            {% if v1_op == 'MHz' %}
+                            <option value="MHz" selected="selected">megaHertz(MHz)</option>
+                            {% else %}
+                            <option value="MHz">megaHertz(MHz)</option>
+                            {% endif %}
+
+                            {% if v1_op == 'GHz' %}
+                            <option value="GHz" selected="selected">gigaHertz(GHz)</option>
+                            {% else %}
+                            <option value="GHz">gigaHertz(GHz)</option>
+                            {% endif %}
+
+                            {% if v1_op == 'THz' %}
+                            <option value="THz" selected="selected">teraHertz(THz)</option>
+                            {% else %}
+                            <option value="THz">teraHertz(THz)</option>
+                            {% endif %}
+
+                        </select>
+
+                    </div>
+                    {% endif %}
+
+                    {% if given_form1 != 'form3' %}
+                    <div class="input-group mb-2 mt-3">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text"><strong>Transmitting power</strong></div>
+                        </div>
+                        <input type="text" oninput="validateNumber(this);" class="form-control" name="p1"
+                            id="inlineFormInputGroup" value={% if p1 %} {{p1}} {% else %} 64 {% endif %}>
+                        <select class="select form-control" id="inlineFormInputGroup" name="p1_op">
+
+                            {% if p1_op == 'W' %}
+                            <option value="W" selected="selected">watts(W)</option>
+                            {% else %}
+                            <option value="W">watts(W)</option>
+                            {% endif %}
+
+                            {% if p1_op == 'kW' %}
+                            <option value="kW" selected="selected">kilowatts(kW)</option>
+                            {% else %}
+                            <option value="kW">kilowatts(kW)</option>
+                            {% endif %}
+
+                            {% if p1_op == 'mW' %}
+                            <option value="mW" selected="selected">milliwatts(mW)</option>
+                            {% else %}
+                            <option value="mW">milliwatts(mW)</option>
+                            {% endif %}
+
+                            {% if p1_op == 'MW' %}
+                            <option value="MW" selected="selected">megawatts(MW)</option>
+                            {% else %}
+                            <option value="MW">megawatts(MW)</option>
+                            {% endif %}
+
+                            {% if p1_op == 'GW' %}
+                            <option value="GW" selected="selected">gigawatts(GW)</option>
+                            {% else %}
+                            <option value="GW">gigawatts(GW)</option>
+                            {% endif %}
+
+                            {% if p1_op == 'BTU/hr' %}
+                            <option value="BTU/hr" selected="selected">British thermal units per hour(BTU/hr)</option>
+                            {% else %}
+                            <option value="BTU/hr">British thermal units per hour(BTU/hr)</option>
+                            {% endif %}
+
+                            {% if p1_op == 'hp(l)' %}
+                            <option value="hp(l)" selected="selected">mechanical horsepowers(hp(l))</option>
+                            {% else %}
+                            <option value="hp(l)">mechanical horsepowers(hp(l))</option>
+                            {% endif %}
+
+                        </select>
+
+                    </div>
+                    {% endif %}
+
+                    <div class=" center col mt-2 ">
+                        <center><button type="submit" class="btn btn-primary">Calculate</button>
+                            <button type="button" onclick="myFunction()" style="margin-top:5px;"
+                                class="btn btn-danger">Reset</button>
+                        </center>
+                    </div>
+
+                </div>
+
+            </form>
+            <br>
+
+
+            <form method="POST" action="{% url 'pulley_calculator' %}" id="my_form">
+                {% csrf_token %}
+
+                <div class="col-auto">
+                    <div class="input-group mb-2">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text"><strong>Choose Calculation</strong></div>
+                        </div>
+
+                        <select name="given_form2" id="inlineFormInputGroup" class="form-control"
+                            onchange="this.form.submit();" autofocus="">
+
+                            {% if given_form2 == 'form4' %}
+                            <option value="form4" selected="selected"> Find Drive torque : | Given Angular velocity,
+                                and Transmitting power</option>
+                            {% else %}
+                            <option value="form4"> Find Drive torque : | Given Angular velocity,
+                                and Transmitting power</option>
+                            {% endif %}
+
+                            {% if given_form2 == 'form5' %}
+                            <option value="form5" selected="selected"> Find Angular velocity : | Given Drive torque,
+                                and Transmitting power</option>
+                            {% else %}
+                            <option value="form5"> Find Angular velocity : | Given Drive torque,
+                                and Transmitting power</option>
+                            {% endif %}
+
+                            {% if given_form2 == 'form6' %}
+                            <option value="form6" selected="selected"> Find Transmitting power : | Given Drive torque,
+                                and Angular velocity</option>
+                            {% else %}
+                            <option value="form6"> Find Transmitting power : | Given Drive torque,
+                                and Angular velocity</option>
+                            {% endif %}
+
+                        </select>
+
+                    </div>
+
+                    {% if given_form2 != 'form4' %}
+                    <div class="input-group mb-2 mt-3">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text"><strong>Drive torque(T2)</strong></div>
+                        </div>
+                        <input type="text" oninput="validateNumber(this);" class="form-control" name="t2"
+                            id="inlineFormInputGroup" value={% if t2 %} {{t2}} {% else %} 14.324 {% endif %}>
+                        <select class="select form-control" id="inlineFormInputGroup" name="t2_op">
+
+                            {% if t2_op == 'Nm' %}
+                            <option value="Nm" selected="selected">Newton meters(Nm)</option>
+                            {% else %}
+                            <option value="Nm">Newton meters(Nm)</option>
+                            {% endif %}
+
+                            {% if t2_op == 'kg-cm' %}
+                            <option value="kg-cm" selected="selected">kilogram centimeters(kg-cm)</option>
+                            {% else %}
+                            <option value="kg-cm">kilogram centimeters(kg-cm)</option>
+                            {% endif %}
+
+                            {% if t2_op == 'J/rad' %}
+                            <option value="J/rad" selected="selected">joules per radians(J/rad)</option>
+                            {% else %}
+                            <option value="J/rad">joules per radians(J/rad)</option>
+                            {% endif %}
+
+                            {% if t2_op == 'ft-lb' %}
+                            <option value="ft-lb" selected="selected">foot-pounds(ft-lb)</option>
+                            {% else %}
+                            <option value="ft-lb">foot-pounds(ft-lb)</option>
+                            {% endif %}
+
+                            {% if t2_op == 'Ncm' %}
+                            <option value="Ncm" selected="selected">Newton centimeters(Ncm)</option>
+                            {% else %}
+                            <option value="Ncm">Newton centimeters(Ncm)</option>
+                            {% endif %}
+
+                            {% if t2_op == 'Nmm' %}
+                            <option value="Nmm" selected="selected">Newton millimeters(Nmm)</option>
+                            {% else %}
+                            <option value="Nmm">Newton millimeters(Nmm)</option>
+                            {% endif %}
+                        </select>
+                    </div>
+                    {% endif %}
+
+                    {% if given_form2 != 'form5' %}
+                    <div class="input-group mb-2 mt-3">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text"><strong>Angular velocity(v2)</strong></div>
+                        </div>
+                        <input type="text" oninput="validateNumber(this);" class="form-control" name="v2"
+                            id="inlineFormInputGroup" value={% if v2 %} {{v2}} {% else %} 35 {% endif %}>
+                        <select class="select form-control" id="inlineFormInputGroup" name="v2_op">
+
+                            {% if v2_op == 'RPM' %}
+                            <option value="RPM" selected="selected">Revolutions per minute(RPM)</option>
+                            {% else %}
+                            <option value="RPM">Revolutions per minute(RPM)</option>
+                            {% endif %}
+
+                            {% if v2_op == 'Hz' %}
+                            <option value="Hz" selected="selected">Hertz(Hz)</option>
+                            {% else %}
+                            <option value="Hz">Hertz(Hz)</option>
+                            {% endif %}
+
+                            {% if v2_op == 'kHz' %}
+                            <option value="kHz" selected="selected">kiloHertz(kHz)</option>
+                            {% else %}
+                            <option value="kHz">kiloHertz(kHz)</option>
+                            {% endif %}
+
+                            {% if v2_op == 'MHz' %}
+                            <option value="MHz" selected="selected">megaHertz(MHz)</option>
+                            {% else %}
+                            <option value="MHz">megaHertz(MHz)</option>
+                            {% endif %}
+
+                            {% if v2_op == 'GHz' %}
+                            <option value="GHz" selected="selected">gigaHertz(GHz)</option>
+                            {% else %}
+                            <option value="GHz">gigaHertz(GHz)</option>
+                            {% endif %}
+
+                            {% if v2_op == 'THz' %}
+                            <option value="THz" selected="selected">teraHertz(THz)</option>
+                            {% else %}
+                            <option value="THz">teraHertz(THz)</option>
+                            {% endif %}
+
+                        </select>
+
+                    </div>
+                    {% endif %}
+
+                    {% if given_form2 != 'form6' %}
+                    <div class="input-group mb-2 mt-3">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text"><strong>Transmitting power</strong></div>
+                        </div>
+                        <input type="text" oninput="validateNumber(this);" class="form-control" name="p2"
+                            id="inlineFormInputGroup" value={% if p2 %} {{p2}} {% else %} 64 {% endif %}>
+                        <select class="select form-control" id="inlineFormInputGroup" name="p2_op">
+
+                            {% if p2_op == 'W' %}
+                            <option value="W" selected="selected">watts(W)</option>
+                            {% else %}
+                            <option value="W">watts(W)</option>
+                            {% endif %}
+
+                            {% if p2_op == 'kW' %}
+                            <option value="kW" selected="selected">kilowatts(kW)</option>
+                            {% else %}
+                            <option value="kW">kilowatts(kW)</option>
+                            {% endif %}
+
+                            {% if p2_op == 'mW' %}
+                            <option value="mW" selected="selected">milliwatts(mW)</option>
+                            {% else %}
+                            <option value="mW">milliwatts(mW)</option>
+                            {% endif %}
+
+                            {% if p2_op == 'MW' %}
+                            <option value="MW" selected="selected">megawatts(MW)</option>
+                            {% else %}
+                            <option value="MW">megawatts(MW)</option>
+                            {% endif %}
+
+                            {% if p2_op == 'GW' %}
+                            <option value="GW" selected="selected">gigawatts(GW)</option>
+                            {% else %}
+                            <option value="GW">gigawatts(GW)</option>
+                            {% endif %}
+
+                            {% if p2_op == 'BTU/hr' %}
+                            <option value="BTU/hr" selected="selected">British thermal units per hour(BTU/hr)</option>
+                            {% else %}
+                            <option value="BTU/hr">British thermal units per hour(BTU/hr)</option>
+                            {% endif %}
+
+                            {% if p2_op == 'hp(l)' %}
+                            <option value="hp(l)" selected="selected">mechanical horsepowers(hp(l))</option>
+                            {% else %}
+                            <option value="hp(l)">mechanical horsepowers(hp(l))</option>
+                            {% endif %}
+
+                        </select>
+
+                    </div>
+                    {% endif %}
+
+                    <div class=" center col mt-2 ">
+                        <center><button type="submit" class="btn btn-primary">Calculate</button>
+                            <button type="button" onclick="myFunction()" style="margin-top:5px;"
+                                class="btn btn-danger">Reset</button>
+                        </center>
+                    </div>
+
+                </div>
+
+            </form>
+            <br>
+
+
+            <form method="POST" action="{% url 'pulley_calculator' %}" id="my_form">
+                {% csrf_token %}
+                <div class="col-auto">
+                    <div class="input-group mb-2">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text"><strong>Choose a Calculation:</strong></div>
+                        </div>
+
+                        <select name="given_form3" id="inlineFormInputGroup" class="form-control"
+                            onchange="this.form.submit();" autofocus="">
+
+                            {% if given_form3 == 'form7' %}
+                            <option value="form7" selected="selected"> Find Belt velocity : | Given diameter,
+                                 and angular velocity</option>
+                            {% else %}
+                            <option value="form7"> Find Belt velocity : | Given diameter,
+                                 and angular velocity</option>
+                            {% endif %}
+
+                            {% if given_form3 == 'form8' %}
+                            <option value="form8" selected="selected"> Find angular velocity : | Given diameter,
+                                 and belt velocity</option>
+                            {% else %}
+                            <option value="form8"> Find angular velocity : | Given diameter,
+                                 and belt velocity</option>
+                            {% endif %}
+
+                            {% if given_form3 == 'form9' %}
+                            <option value="form9" selected="selected"> Find diameter : | Given angular velocity,
+                                 and belt velocity</option>
+                            {% else %}
+                            <option value="form9"> Find diameter : | Given angular velocity,
+                                 and belt velocity</option>
+                            {% endif %}
+
+
+                        </select>
+
+                    </div>
+
+
+                    {% if given_form3 != 'form7' %}
+                    <div class="input-group mb-2 mt-3">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text"><strong>Belt velocity(v)</strong></div>
+                        </div>
+                        <input type="text" oninput="validateNumber(this);" class="form-control" name="v"
+                            id="inlineFormInputGroup" value={% if v %} {{v}} {% else %} 25 {% endif %}>
+                        <select class="select form-control" id="inlineFormInputGroup" name="v_op">
+
+                            {% if v_op == 'm/s' %}
+                            <option value="m/s" selected="selected">meter per second(m/s)</option>
+                            {% else %}
+                            <option value="m/s">meter per second(m/s)</option>
+                            {% endif %}
+
+                            {% if v_op == 'ft/s' %}
+                            <option value="ft/s" selected="selected">feet per second(ft/s)</option>
+                            {% else %}
+                            <option value="ft/s">feet per second(ft/s)</option>
+                            {% endif %}
+
+                            {% if v_op == 'km/h' %}
+                            <option value="km/h" selected="selected">kilometer per hour(km/h)</option>
+                            {% else %}
+                            <option value="km/h">kilometer per hour(km/h)</option>
+                            {% endif %}
+
+                            {% if v_op == 'mph' %}
+                            <option value="mph" selected="selected">miles per hour(mph)</option>
+                            {% else %}
+                            <option value="mph">miles per hour(mph)</option>
+                            {% endif %}
+
+                            {% if v_op == 'knots' %}
+                            <option value="knots" selected="selected">knots</option>
+                            {% else %}
+                            <option value="knots">knots</option>
+                            {% endif %}
+
+                            {% if v_op == 'ft/m' %}
+                            <option value="ft/m" selected="selected">feet per minute(ft/m)</option>
+                            {% else %}
+                            <option value="ft/m">feet per minute(ft/m)</option>
+                            {% endif %}
+                        </select>
+                    </div>
+                    {% endif %}
+
+
+                    {% if given_form3 != 'form8' %}
+                    <div class="input-group mb-2 mt-3">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text"><strong>Angular velocity(w)</strong></div>
+                        </div>
+                        <input type="text" oninput="validateNumber(this);" class="form-control" name="w"
+                            id="inlineFormInputGroup" value={% if w %} {{w}} {% else %} 35 {% endif %}>
+                        <select class="select form-control" id="inlineFormInputGroup" name="w_op">
+
+                            {% if w_op == 'RPM' %}
+                            <option value="RPM" selected="selected">Revolutions per minute(RPM)</option>
+                            {% else %}
+                            <option value="RPM">Revolutions per minute(RPM)</option>
+                            {% endif %}
+
+                            {% if w_op == 'Hz' %}
+                            <option value="Hz" selected="selected">Hertz(Hz)</option>
+                            {% else %}
+                            <option value="Hz">Hertz(Hz)</option>
+                            {% endif %}
+
+                            {% if w_op == 'kHz' %}
+                            <option value="kHz" selected="selected">kiloHertz(kHz)</option>
+                            {% else %}
+                            <option value="kHz">kiloHertz(kHz)</option>
+                            {% endif %}
+
+                            {% if w_op == 'MHz' %}
+                            <option value="MHz" selected="selected">megaHertz(MHz)</option>
+                            {% else %}
+                            <option value="MHz">megaHertz(MHz)</option>
+                            {% endif %}
+
+                            {% if w_op == 'GHz' %}
+                            <option value="GHz" selected="selected">gigaHertz(GHz)</option>
+                            {% else %}
+                            <option value="GHz">gigaHertz(GHz)</option>
+                            {% endif %}
+
+                            {% if w_op == 'THz' %}
+                            <option value="THz" selected="selected">teraHertz(THz)</option>
+                            {% else %}
+                            <option value="THz">teraHertz(THz)</option>
+                            {% endif %}
+
+                        </select>
+
+                    </div>
+                    {% endif %}
+
+
+                    {% if given_form3 != 'form9' %}
+                    <div class="input-group mb-2 mt-3">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text"><strong>diameter</strong></div>
+                        </div>
+                        <input type="text" oninput="validateNumber(this);" class="form-control" name="d"
+                            id="inlineFormInputGroup" value={% if d %} {{d}} {% else %} 80 {% endif %}>
+                        <select class="select form-control" id="inlineFormInputGroup" name="d_op">
+
+                            {% if d_op == 'm' %}
+                            <option value="m" selected="selected">meters(m)</option>
+                            {% else %}
+                            <option value="m">meters(m)</option>
+                            {% endif %}
+
+                            {% if d_op == 'mm' %}
+                            <option value="mm" selected="selected">millimeters(mm)</option>
+                            {% else %}
+                            <option value="mm">millimeters(mm)</option>
+                            {% endif %}
+
+                            {% if d_op == 'km' %}
+                            <option value="km" selected="selected">kilometers(km)</option>
+                            {% else %}
+                            <option value="km">kilometers(km)</option>
+                            {% endif %}
+
+                            {% if d_op == 'cm' %}
+                            <option value="cm" selected="selected">centimeters(cm)</option>
+                            {% else %}
+                            <option value="cm">centimeters(cm)</option>
+                            {% endif %}
+
+                            {% if d_op == 'in' %}
+                            <option value="in" selected="selected">inches(in)</option>
+                            {% else %}
+                            <option value="in">inches(in)</option>
+                            {% endif %}
+
+                            {% if d_op == 'ft' %}
+                            <option value="ft" selected="selected">feets(ft)</option>
+                            {% else %}
+                            <option value="ft">feets(ft)</option>
+                            {% endif %}
+
+                            {% if d_op == 'yd' %}
+                            <option value="yd" selected="selected">yards(yd)</option>
+                            {% else %}
+                            <option value="yd">yards(yd)</option>
+                            {% endif %}
+
+                            {% if d_op == 'mi' %}
+                            <option value="mi" selected="selected">miles(mi)</option>
+                            {% else %}
+                            <option value="mi">miles(mi)</option>
+                            {% endif %}
+
+                        </select>
+
+                    </div>
+                    {% endif %}
+
+
+
+                    <div class=" center col mt-2 ">
+                        <center><button type="submit" class="btn btn-primary">Calculate</button>
+                            <button type="button" onclick="myFunction()" style="margin-top:5px;"
+                                class="btn btn-danger">Reset</button>
+                        </center>
+                    </div>
+                </div>
+            </form>
+            <br>
+
+            <form method="POST" action="{% url 'pulley_calculator' %}" id="my_form">
+                {% csrf_token %}
+                <div class="col-auto">
+                    <div class="input-group mb-2">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text"><strong>Choose a Calculation:</strong></div>
+                        </div>
+
+                        <select name="given_form4" id="inlineFormInputGroup" class="form-control"
+                            onchange="this.form.submit();" autofocus="">
+
+                            {% if given_form4 == 'form10' %}
+                            <option value="form10" selected="selected"> Find Belt tension : | Given Transmitting power,
+                                 and Belt velocity</option>
+                            {% else %}
+                            <option value="form10"> Find Belt tension : | Given Transmitting power,
+                                 and Belt velocity</option>
+                            {% endif %}
+
+                            {% if given_form4 == 'form11' %}
+                            <option value="form11" selected="selected"> Find Transmitting power : | Given Belt tension,
+                                 and Belt velocity</option>
+                            {% else %}
+                            <option value="form11"> Find Transmitting power : | Given Belt tension,
+                                 and Belt velocity</option>
+                            {% endif %}
+
+                            {% if given_form4 == 'form12' %}
+                            <option value="form12" selected="selected"> Find Belt velocity : | Given Belt tension,
+                                 and Transmitting power</option>
+                            {% else %}
+                            <option value="form12"> Find Belt velocity : | Given Belt tension,
+                                 and Transmitting power</option>
+                            {% endif %}
+
+
+                        </select>
+
+                    </div>
+
+
+                    {% if given_form4 != 'form10' %}
+                    <div class="input-group mb-2 mt-3">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text"><strong>Belt tension</strong></div>
+                        </div>
+                        <input type="text" oninput="validateNumber(this);" class="form-control" name="bt"
+                            id="inlineFormInputGroup" value={% if bt %} {{bt}} {% else %} 57 {% endif %}>
+                        <select class="select form-control" id="inlineFormInputGroup" name="bt_op">
+
+                            {% if bt_op == 'N' %}
+                            <option value="N" selected="selected">newtons(N)</option>
+                            {% else %}
+                            <option value="N">newtons(N)</option>
+                            {% endif %}
+
+                            {% if bt_op == 'kN' %}
+                            <option value="kN" selected="selected">kilonewtons(kN)</option>
+                            {% else %}
+                            <option value="kN">kilonewtons(kN)</option>
+                            {% endif %}
+
+                            {% if bt_op == 'MN' %}
+                            <option value="MN" selected="selected">meganewtons(MN)</option>
+                            {% else %}
+                            <option value="MN">meganewtons(MN)</option>
+                            {% endif %}
+
+                            {% if bt_op == 'GN' %}
+                            <option value="GN" selected="selected">giganewtons(GN)</option>
+                            {% else %}
+                            <option value="GN">giganewtons(GN)</option>
+                            {% endif %}
+
+                            {% if bt_op == 'TN' %}
+                            <option value="TN" selected="selected">teranewtons(TN)</option>
+                            {% else %}
+                            <option value="TN">teranewtons(TN)</option>
+                            {% endif %}
+                        </select>
+                    </div>
+                    {% endif %}
+
+
+                    {% if given_form4 != 'form11' %}
+                    <div class="input-group mb-2 mt-3">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text"><strong>Transmitting power</strong></div>
+                        </div>
+                        <input type="text" oninput="validateNumber(this);" class="form-control" name="p4"
+                            id="inlineFormInputGroup" value={% if p4 %} {{p4}} {% else %} 60 {% endif %}>
+                        <select class="select form-control" id="inlineFormInputGroup" name="p4_op">
+
+                            {% if p4_op == 'W' %}
+                            <option value="W" selected="selected">watts(W)</option>
+                            {% else %}
+                            <option value="W">watts(W)</option>
+                            {% endif %}
+
+                            {% if p4_op == 'kW' %}
+                            <option value="kW" selected="selected">kilowatts(kW)</option>
+                            {% else %}
+                            <option value="kW">kilowatts(kW)</option>
+                            {% endif %}
+
+                            {% if p4_op == 'mW' %}
+                            <option value="mW" selected="selected">milliwatts(mW)</option>
+                            {% else %}
+                            <option value="mW">milliwatts(mW)</option>
+                            {% endif %}
+
+                            {% if p4_op == 'MW' %}
+                            <option value="MW" selected="selected">megawatts(MW)</option>
+                            {% else %}
+                            <option value="MW">megawatts(MW)</option>
+                            {% endif %}
+
+                            {% if p4_op == 'GW' %}
+                            <option value="GW" selected="selected">gigawatts(GW)</option>
+                            {% else %}
+                            <option value="GW">gigawatts(GW)</option>
+                            {% endif %}
+
+                            {% if p4_op == 'BTU/hr' %}
+                            <option value="BTU/hr" selected="selected">British thermal units per hour(BTU/hr)</option>
+                            {% else %}
+                            <option value="BTU/hr">British thermal units per hour(BTU/hr)</option>
+                            {% endif %}
+
+                            {% if p4_op == 'hp(l)' %}
+                            <option value="hp(l)" selected="selected">mechanical horsepowers(hp(l))</option>
+                            {% else %}
+                            <option value="hp(l)">mechanical horsepowers(hp(l))</option>
+                            {% endif %}
+
+                        </select>
+
+                    </div>
+                    {% endif %}
+
+
+                    {% if given_form4 != 'form12' %}
+                    <div class="input-group mb-2 mt-3">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text"><strong>Belt velocity(v)</strong></div>
+                        </div>
+                        <input type="text" oninput="validateNumber(this);" class="form-control" name="v4"
+                            id="inlineFormInputGroup" value={% if v4 %} {{v4}} {% else %} 25 {% endif %}>
+                        <select class="select form-control" id="inlineFormInputGroup" name="v4_op">
+
+                            {% if v4_op == 'm/s' %}
+                            <option value="m/s" selected="selected">meter per second(m/s)</option>
+                            {% else %}
+                            <option value="m/s">meter per second(m/s)</option>
+                            {% endif %}
+
+                            {% if v4_op == 'ft/s' %}
+                            <option value="ft/s" selected="selected">feet per second(ft/s)</option>
+                            {% else %}
+                            <option value="ft/s">feet per second(ft/s)</option>
+                            {% endif %}
+
+                            {% if v4_op == 'km/h' %}
+                            <option value="km/h" selected="selected">kilometer per hour(km/h)</option>
+                            {% else %}
+                            <option value="km/h">kilometer per hour(km/h)</option>
+                            {% endif %}
+
+                            {% if v4_op == 'mph' %}
+                            <option value="mph" selected="selected">miles per hour(mph)</option>
+                            {% else %}
+                            <option value="mph">miles per hour(mph)</option>
+                            {% endif %}
+
+                            {% if v4_op == 'knots' %}
+                            <option value="knots" selected="selected">knots</option>
+                            {% else %}
+                            <option value="knots">knots</option>
+                            {% endif %}
+
+                            {% if v4_op == 'ft/m' %}
+                            <option value="ft/m" selected="selected">feet per minute(ft/m)</option>
+                            {% else %}
+                            <option value="ft/m">feet per minute(ft/m)</option>
+                            {% endif %}
+                        </select>
+                    </div>
+                    {% endif %}
+
+
+
+                    <div class=" center col mt-2 ">
+                        <center><button type="submit" class="btn btn-primary">Calculate</button>
+                            <button type="button" onclick="myFunction()" style="margin-top:5px;"
+                                class="btn btn-danger">Reset</button>
+                        </center>
+                    </div>
+                </div>
+            </form>
+            <br>
+
+            <form method="POST" action="{% url 'pulley_calculator' %}" id="my_form">
+                {% csrf_token %}
+                <div class="col-auto">
+                    <div class="input-group mb-2">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text"><strong>Choose a Calculation:</strong></div>
+                        </div>
+
+                        <select name="given_form5" id="inlineFormInputGroup" class="form-control"
+                            onchange="this.form.submit();" autofocus="">
+
+                            {% if given_form5 == 'form13' %}
+                            <option value="form13" selected="selected"> Find Length : | Given diameter1,
+                                 diameter2 and Distance</option>
+                            {% else %}
+                            <option value="form13"> Find Length : | Given diameter1,
+                                 diameter2 and Distance</option>
+                            {% endif %}
+
+
+
+                        </select>
+
+                    </div>
+
+
+                    {% if given_form5 == 'form13' %}
+                    <div class="input-group mb-2 mt-3">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text"><strong>diameter1</strong></div>
+                        </div>
+                        <input type="text" oninput="validateNumber(this);" class="form-control" name="d1"
+                            id="inlineFormInputGroup" value={% if d1 %} {{d1}} {% else %} 80 {% endif %}>
+                        <select class="select form-control" id="inlineFormInputGroup" name="d1_op">
+
+                            {% if d1_op == 'm' %}
+                            <option value="m" selected="selected">meters(m)</option>
+                            {% else %}
+                            <option value="m">meters(m)</option>
+                            {% endif %}
+
+                            {% if d1_op == 'mm' %}
+                            <option value="mm" selected="selected">millimeters(mm)</option>
+                            {% else %}
+                            <option value="mm">millimeters(mm)</option>
+                            {% endif %}
+
+                            {% if d1_op == 'km' %}
+                            <option value="km" selected="selected">kilometers(km)</option>
+                            {% else %}
+                            <option value="km">kilometers(km)</option>
+                            {% endif %}
+
+                            {% if d1_op == 'cm' %}
+                            <option value="cm" selected="selected">centimeters(cm)</option>
+                            {% else %}
+                            <option value="cm">centimeters(cm)</option>
+                            {% endif %}
+
+                            {% if d1_op == 'in' %}
+                            <option value="in" selected="selected">inches(in)</option>
+                            {% else %}
+                            <option value="in">inches(in)</option>
+                            {% endif %}
+
+                            {% if d1_op == 'ft' %}
+                            <option value="ft" selected="selected">feets(ft)</option>
+                            {% else %}
+                            <option value="ft">feets(ft)</option>
+                            {% endif %}
+
+                            {% if d1_op == 'yd' %}
+                            <option value="yd" selected="selected">yards(yd)</option>
+                            {% else %}
+                            <option value="yd">yards(yd)</option>
+                            {% endif %}
+
+                            {% if d1_op == 'mi' %}
+                            <option value="mi" selected="selected">miles(mi)</option>
+                            {% else %}
+                            <option value="mi">miles(mi)</option>
+                            {% endif %}
+
+                        </select>
+
+                    </div>
+                    <div class="input-group mb-2 mt-3">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text"><strong>diameter2</strong></div>
+                        </div>
+                        <input type="text" oninput="validateNumber(this);" class="form-control" name="d2"
+                            id="inlineFormInputGroup" value={% if d2 %} {{d2}} {% else %} 60 {% endif %}>
+                        <select class="select form-control" id="inlineFormInputGroup" name="d2_op">
+
+                            {% if d2_op == 'm' %}
+                            <option value="m" selected="selected">meters(m)</option>
+                            {% else %}
+                            <option value="m">meters(m)</option>
+                            {% endif %}
+
+                            {% if d2_op == 'mm' %}
+                            <option value="mm" selected="selected">millimeters(mm)</option>
+                            {% else %}
+                            <option value="mm">millimeters(mm)</option>
+                            {% endif %}
+
+                            {% if d2_op == 'km' %}
+                            <option value="km" selected="selected">kilometers(km)</option>
+                            {% else %}
+                            <option value="km">kilometers(km)</option>
+                            {% endif %}
+
+                            {% if d2_op == 'cm' %}
+                            <option value="cm" selected="selected">centimeters(cm)</option>
+                            {% else %}
+                            <option value="cm">centimeters(cm)</option>
+                            {% endif %}
+
+                            {% if d2_op == 'in' %}
+                            <option value="in" selected="selected">inches(in)</option>
+                            {% else %}
+                            <option value="in">inches(in)</option>
+                            {% endif %}
+
+                            {% if d2_op == 'ft' %}
+                            <option value="ft" selected="selected">feets(ft)</option>
+                            {% else %}
+                            <option value="ft">feets(ft)</option>
+                            {% endif %}
+
+                            {% if d2_op == 'yd' %}
+                            <option value="yd" selected="selected">yards(yd)</option>
+                            {% else %}
+                            <option value="yd">yards(yd)</option>
+                            {% endif %}
+
+                            {% if d2_op == 'mi' %}
+                            <option value="mi" selected="selected">miles(mi)</option>
+                            {% else %}
+                            <option value="mi">miles(mi)</option>
+                            {% endif %}
+
+                        </select>
+
+                    </div>
+                    <div class="input-group mb-2 mt-3">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text"><strong>Distance(D)</strong></div>
+                        </div>
+                        <input type="text" oninput="validateNumber(this);" class="form-control" name="D"
+                            id="inlineFormInputGroup" value={% if D %} {{D}} {% else %} 10 {% endif %}>
+                        <select class="select form-control" id="inlineFormInputGroup" name="D_op">
+
+                            {% if D_op == 'm' %}
+                            <option value="m" selected="selected">meters(m)</option>
+                            {% else %}
+                            <option value="m">meters(m)</option>
+                            {% endif %}
+
+                            {% if D_op == 'mm' %}
+                            <option value="mm" selected="selected">millimeters(mm)</option>
+                            {% else %}
+                            <option value="mm">millimeters(mm)</option>
+                            {% endif %}
+
+                            {% if D_op == 'km' %}
+                            <option value="km" selected="selected">kilometers(km)</option>
+                            {% else %}
+                            <option value="km">kilometers(km)</option>
+                            {% endif %}
+
+                            {% if D_op == 'cm' %}
+                            <option value="cm" selected="selected">centimeters(cm)</option>
+                            {% else %}
+                            <option value="cm">centimeters(cm)</option>
+                            {% endif %}
+
+                            {% if D_op == 'in' %}
+                            <option value="in" selected="selected">inches(in)</option>
+                            {% else %}
+                            <option value="in">inches(in)</option>
+                            {% endif %}
+
+                            {% if D_op == 'ft' %}
+                            <option value="ft" selected="selected">feets(ft)</option>
+                            {% else %}
+                            <option value="ft">feets(ft)</option>
+                            {% endif %}
+
+                            {% if D_op == 'yd' %}
+                            <option value="yd" selected="selected">yards(yd)</option>
+                            {% else %}
+                            <option value="yd">yards(yd)</option>
+                            {% endif %}
+
+                            {% if D_op == 'mi' %}
+                            <option value="mi" selected="selected">miles(mi)</option>
+                            {% else %}
+                            <option value="mi">miles(mi)</option>
+                            {% endif %}
+
+                        </select>
+
+                    </div>
+                    {% endif %}
+
+                    <div class=" center col mt-2 ">
+                        <center><button type="submit" class="btn btn-primary">Calculate</button>
+                            <button type="button" onclick="myFunction()" style="margin-top:5px;"
+                                class="btn btn-danger">Reset</button>
+                        </center>
+                    </div>
+                </div>
+            </form>
+
+
+
+        </div>
+
+
+    </div>
+
+
+
+    {% if p %}
+    <a href="{{p}}" id="ddd"></a>
+    {%endif%}
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.getElementById('ddd').click();
+        });
+    </script>
+
+
+    <div id="clear">
+
+        {% if given_form1 == "form1" and v1 and p1 %}
+        <div class="card" id="drive-torque1">
+            <div class="card-header">
+                <h2 class="h2">Steps to Find Drive torque :</h2>
+            </div>
+
+            <div class="card-body">
+                <strong>Drive torque formula:-</strong>
+                <br>
+                <p class="btn btn-outline-secondary active">T = P /(2 * π * n / 60)</p>
+                <br>
+                <strong>where:</strong>
+                    <ul>
+                        <li>T is the drive torque,</li>
+                        <li>n is the angular velocity,</li>
+                        <li>P is the transmitting power.</li>
+                    </ul>
+                <p><b>Input values are:-</b></p>
+                <p>P = {{p1}} {{p1_op}}</p>
+                <p>n = {{v1}} {{v1_op}}</p>
+
+                {% if p1_op != 'W' %}
+                <details style="border:2px solid #009FE8; width:100%;">
+                    <summary><b>Convert {{p1}} "{{p1_op}}" to "W" </b></summary>
+                    <p>Transmitting power = {{text_p1}} </p>
+                    <p>Transmitting power = {{p1_new}} W</p>
+                </details>
+                <br>
+                {% endif %}
+
+                {% if v1_op != 'RPM' %}
+                <details style="border:2px solid #009FE8; width:100%;">
+                    <summary><b>Convert {{v1}} "{{v1_op}}" to "RPM" </b></summary>
+                    <p>Angular velocity = {{text_v1}} </p>
+                    <p>Angular velocity = {{v1_new}} RPM</p>
+                </details>
+                <br>
+                {% endif %}
+
+                <p><b>Put values into formula</b></p>
+                <p><b>Drive torque(T) = {{p1}} /(2 * π * {{v1}} / 60)</b></p>
+                <p><b>Drive torque(T) = {{t1}} Nm</b></p>
+
+
+            </div>
+
+        </div>
+        {% endif %}
+
+        {% if given_form1 == "form2" and t1 and p1 %}
+        <div class="card" id="angular-velocity1">
+            <div class="card-header">
+                <h2 class="h2">Steps to Find Angular velocity :</h2>
+            </div>
+
+            <div class="card-body">
+                <strong>Angular velocity formula:-</strong>
+                <br>
+                <p class="btn btn-outline-secondary active">n = P /(2 * π * T / 60)</p>
+                <br>
+                <strong>where:</strong>
+                    <ul>
+                        <li>T is the drive torque,</li>
+                        <li>n is the angular velocity,</li>
+                        <li>P is the transmitting power.</li>
+                    </ul>
+                <p><b>Input values are:-</b></p>
+                <p>P = {{p1}} {{p1_op}}</p>
+                <p>T = {{t1}} {{t1_op}}</p>
+
+                {% if p1_op != 'W' %}
+                <details style="border:2px solid #009FE8; width:100%;">
+                    <summary><b>Convert {{p1}} "{{p1_op}}" to "W" </b></summary>
+                    <p>Transmitting power = {{text_p1}} </p>
+                    <p>Transmitting power = {{p1_new}} W</p>
+                </details>
+                <br>
+                {% endif %}
+
+                {% if t1_op != 'Nm' %}
+                <details style="border:2px solid #009FE8; width:100%;">
+                    <summary><b>Convert {{t1}} "{{t1_op}}" to "Nm" </b></summary>
+                    <p>Drive torque = {{text_t1}} </p>
+                    <p>Drive torque = {{t1_new}} RPM</p>
+                </details>
+                <br>
+                {% endif %}
+
+                <p><b>Put values into formula</b></p>
+                <p><b>Angular velocity(n) = {{p1}} /(2 * π * {{t1}} / 60)</b></p>
+                <p><b>Angular velocity(n) = {{v1}} RPM</b></p>
+
+
+            </div>
+
+        </div>
+        {% endif %}
+
+        {% if given_form1 == "form3" and t1 and v1 %}
+        <div class="card" id="transmitting-power1">
+            <div class="card-header">
+                <h2 class="h2">Steps to Find Transmitting power :</h2>
+            </div>
+
+            <div class="card-body">
+                <strong>Transmitting power formula:-</strong>
+                <br>
+                <p class="btn btn-outline-secondary active">P = n * (2 * π * T / 60)</p>
+                <br>
+                <strong>where:</strong>
+                    <ul>
+                        <li>T is the drive torque,</li>
+                        <li>n is the angular velocity,</li>
+                        <li>P is the transmitting power.</li>
+                    </ul>
+                <p><b>Input values are:-</b></p>
+                <p>n = {{v1}} {{v1_op}}</p>
+                <p>T = {{t1}} {{t1_op}}</p>
+
+                {% if v1_op != 'RPM' %}
+                <details style="border:2px solid #009FE8; width:100%;">
+                    <summary><b>Convert {{v1}} "{{v1_op}}" to "RPM" </b></summary>
+                    <p>Angular velocity = {{text_v1}} </p>
+                    <p>Angular velocity = {{v1_new}} RPM</p>
+                </details>
+                <br>
+                {% endif %}
+
+                {% if t1_op != 'Nm' %}
+                <details style="border:2px solid #009FE8; width:100%;">
+                    <summary><b>Convert {{t1}} "{{t1_op}}" to "Nm" </b></summary>
+                    <p>Drive torque = {{text_t1}} </p>
+                    <p>Drive torque = {{t1_new}} RPM</p>
+                </details>
+                <br>
+                {% endif %}
+
+                <p><b>Put values into formula</b></p>
+                <p><b>Transmitting power(P) = {{v1}} * (2 * π * {{t1}} / 60)</b></p>
+                <p><b>Transmitting power(P) = {{p1}} W</b></p>
+
+
+            </div>
+
+        </div>
+        {% endif %}
+
+        {% if given_form2 == "form4" and v2 and p2 %}
+        <div class="card" id="drive-torque2">
+            <div class="card-header">
+                <h2 class="h2">Steps to Find Drive torque :</h2>
+            </div>
+
+            <div class="card-body">
+                <strong>Drive torque formula:-</strong>
+                <br>
+                <p class="btn btn-outline-secondary active">T = P /(2 * π * n / 60)</p>
+                <br>
+                <strong>where:</strong>
+                    <ul>
+                        <li>T is the drive torque,</li>
+                        <li>n is the angular velocity,</li>
+                        <li>P is the transmitting power.</li>
+                    </ul>
+                <p><b>Input values are:-</b></p>
+                <p>P = {{p2}} {{p2_op}}</p>
+                <p>n = {{v2}} {{v2_op}}</p>
+
+                {% if p2_op != 'W' %}
+                <details style="border:2px solid #009FE8; width:100%;">
+                    <summary><b>Convert {{p2}} "{{p2_op}}" to "W" </b></summary>
+                    <p>Transmitting power = {{text_p2}} </p>
+                    <p>Transmitting power = {{p2_new}} W</p>
+                </details>
+                <br>
+                {% endif %}
+
+                {% if v2_op != 'RPM' %}
+                <details style="border:2px solid #009FE8; width:100%;">
+                    <summary><b>Convert {{v2}} "{{v2_op}}" to "RPM" </b></summary>
+                    <p>Angular velocity = {{text_v2}} </p>
+                    <p>Angular velocity = {{v2_new}} RPM</p>
+                </details>
+                <br>
+                {% endif %}
+
+                <p><b>Put values into formula</b></p>
+                <p><b>Drive torque(T) = {{p2}} /(2 * π * {{v2}} / 60)</b></p>
+                <p><b>Drive torque(T) = {{t2}} Nm</b></p>
+
+
+            </div>
+
+        </div>
+        {% endif %}
+
+        {% if given_form2 == "form5" and t2 and p2 %}
+        <div class="card" id="angular-velocity2">
+            <div class="card-header">
+                <h2 class="h2">Steps to Find Angular velocity :</h2>
+            </div>
+
+            <div class="card-body">
+                <strong>Angular velocity formula:-</strong>
+                <br>
+                <p class="btn btn-outline-secondary active">n = P /(2 * π * T / 60)</p>
+                <br>
+                <strong>where:</strong>
+                    <ul>
+                        <li>T is the drive torque,</li>
+                        <li>n is the angular velocity,</li>
+                        <li>P is the transmitting power.</li>
+                    </ul>
+                <p><b>Input values are:-</b></p>
+                <p>P = {{p2}} {{p2_op}}</p>
+                <p>T = {{t2}} {{t2_op}}</p>
+
+                {% if p2_op != 'W' %}
+                <details style="border:2px solid #009FE8; width:100%;">
+                    <summary><b>Convert {{p2}} "{{p2_op}}" to "W" </b></summary>
+                    <p>Transmitting power = {{text_p2}} </p>
+                    <p>Transmitting power = {{p2_new}} W</p>
+                </details>
+                <br>
+                {% endif %}
+
+                {% if t2_op != 'Nm' %}
+                <details style="border:2px solid #009FE8; width:100%;">
+                    <summary><b>Convert {{t2}} "{{t2_op}}" to "Nm" </b></summary>
+                    <p>Drive torque = {{text_t2}} </p>
+                    <p>Drive torque = {{t2_new}} RPM</p>
+                </details>
+                <br>
+                {% endif %}
+
+                <p><b>Put values into formula</b></p>
+                <p><b>Angular velocity(n) = {{p2}} /(2 * π * {{t2}} / 60)</b></p>
+                <p><b>Angular velocity(n) = {{v2}} RPM</b></p>
+
+
+            </div>
+
+        </div>
+        {% endif %}
+
+        {% if given_form2 == "form6" and t2 and v2 %}
+        <div class="card" id="transmitting-power2">
+            <div class="card-header">
+                <h2 class="h2">Steps to Find Transmitting power :</h2>
+            </div>
+
+            <div class="card-body">
+                <strong>Transmitting power formula:-</strong>
+                <br>
+                <p class="btn btn-outline-secondary active">P = n * (2 * π * T / 60)</p>
+                <br>
+                <strong>where:</strong>
+                    <ul>
+                        <li>T is the drive torque,</li>
+                        <li>n is the angular velocity,</li>
+                        <li>P is the transmitting power.</li>
+                    </ul>
+                <p><b>Input values are:-</b></p>
+                <p>n = {{v2}} {{v2_op}}</p>
+                <p>T = {{t2}} {{t2_op}}</p>
+
+                {% if v2_op != 'RPM' %}
+                <details style="border:2px solid #009FE8; width:100%;">
+                    <summary><b>Convert {{v2}} "{{v2_op}}" to "RPM" </b></summary>
+                    <p>Angular velocity = {{text_v2}} </p>
+                    <p>Angular velocity = {{v2_new}} RPM</p>
+                </details>
+                <br>
+                {% endif %}
+
+                {% if t2_op != 'Nm' %}
+                <details style="border:2px solid #009FE8; width:100%;">
+                    <summary><b>Convert {{t2}} "{{t2_op}}" to "Nm" </b></summary>
+                    <p>Drive torque = {{text_t2}} </p>
+                    <p>Drive torque = {{t2_new}} RPM</p>
+                </details>
+                <br>
+                {% endif %}
+
+                <p><b>Put values into formula</b></p>
+                <p><b>Transmitting power(P) = {{v2}} * (2 * π * {{t2}} / 60)</b></p>
+                <p><b>Transmitting power(P) = {{p2}} W</b></p>
+
+
+            </div>
+
+        </div>
+        {% endif %}
+
+        {% if given_form3 == "form7" and w and d %}
+        <div class="card" id="belt-velocity">
+            <div class="card-header">
+                <h2 class="h2">Steps to Find Belt velocity :</h2>
+            </div>
+
+            <div class="card-body">
+                <strong>Belt velocity formula:-</strong>
+                <br>
+                <p class="btn btn-outline-secondary active">v = π * d₁ * n₁ / 60</p>
+                <br>
+                <strong>where:</strong>
+                    <ul>
+                        <li>v is the belt velocity,</li>
+                        <li>n₁ is the angular velocity,</li>
+                        <li>d₁ is the driver pulley diameter.</li>
+                    </ul>
+                <p><b>Input values are:-</b></p>
+                <p>d₁ = {{d}} {{d_op}}</p>
+                <p>n₁ = {{w}} {{w_op}}</p>
+
+                {% if w_op != 'RPM' %}
+                <details style="border:2px solid #009FE8; width:100%;">
+                    <summary><b>Convert {{w}} "{{w_op}}" to "RPM" </b></summary>
+                    <p>Angular velocity = {{text_w}} </p>
+                    <p>Angular velocity = {{w_new}} RPM</p>
+                </details>
+                <br>
+                {% endif %}
+
+                {% if d_op != 'm' %}
+                <details style="border:2px solid #009FE8; width:100%;">
+                    <summary><b>Convert {{d}} "{{d_op}}" to "m" </b></summary>
+                    <p>Drive pulley diameter = {{text_d}} </p>
+                    <p>Drive pulley diameter = {{d_new}} m</p>
+                </details>
+                <br>
+                {% endif %}
+                <p><b>Put values into formula</b></p>
+                <p><b>Belt velocity(v) = π * {{d}} * {{w}} / 60</b></p>
+                <p><b>Belt velocity(v) = {{v}} m/s</b></p>
+
+
+            </div>
+
+        </div>
+        {% endif %}
+
+        {% if given_form3 == "form8" and v and d %}
+        <div class="card" id="angular-velocity3">
+            <div class="card-header">
+                <h2 class="h2">Steps to Find Angular velocity :</h2>
+            </div>
+
+            <div class="card-body">
+                <strong>Angular velocity formula:-</strong>
+                <br>
+                <p class="btn btn-outline-secondary active">n₁ = 60 * v / π * d₁</p>
+                <br>
+                <strong>where:</strong>
+                    <ul>
+                        <li>v is the belt velocity,</li>
+                        <li>n₁ is the angular velocity,</li>
+                        <li>d₁ is the driver pulley diameter.</li>
+                    </ul>
+                <p><b>Input values are:-</b></p>
+                <p>d₁ = {{d}} {{d_op}}</p>
+                <p>v = {{v}} {{v_op}}</p>
+
+                {% if v_op != 'm/s' %}
+                <details style="border:2px solid #009FE8; width:100%;">
+                    <summary><b>Convert {{v}} "{{v_op}}" to "m/s" </b></summary>
+                    <p>Belt velocity = {{text_v}} </p>
+                    <p>Belt velocity = {{v_new}} m/s</p>
+                </details>
+                <br>
+                {% endif %}
+
+                {% if d_op != 'm' %}
+                <details style="border:2px solid #009FE8; width:100%;">
+                    <summary><b>Convert {{d}} "{{d_op}}" to "m" </b></summary>
+                    <p>Drive pulley diameter = {{text_d}} </p>
+                    <p>Drive pulley diameter = {{d_new}} m</p>
+                </details>
+                <br>
+                {% endif %}
+                <p><b>Put values into formula</b></p>
+                <p><b>Angular velocity(n₁) = 60 * {{v}} / π * {{d}}</b></p>
+                <p><b>Angular velocity(n₁) = {{w}} RPM</b></p>
+
+
+            </div>
+
+        </div>
+        {% endif %}
+
+        {% if given_form3 == "form9" and v and w %}
+        <div class="card" id="diameter">
+            <div class="card-header">
+                <h2 class="h2">Steps to Find driver pulley diameter :</h2>
+            </div>
+
+            <div class="card-body">
+                <strong>Driver pulley diameter formula:-</strong>
+                <br>
+                <p class="btn btn-outline-secondary active">d₁ = 60 * v / π * n₁</p>
+                <br>
+                <strong>where:</strong>
+                    <ul>
+                        <li>v is the belt velocity,</li>
+                        <li>n₁ is the angular velocity,</li>
+                        <li>d₁ is the driver pulley diameter.</li>
+                    </ul>
+                <p><b>Input values are:-</b></p>
+                <p>v = {{w}} {{w_op}}</p>
+                <p>n₁ = {{v}} {{v_op}}</p>
+
+                {% if w_op != 'RPM' %}
+                <details style="border:2px solid #009FE8; width:100%;">
+                    <summary><b>Convert {{w}} "{{w_op}}" to "RPM" </b></summary>
+                    <p>Angular velocity = {{text_w}} </p>
+                    <p>Angular velocity = {{w_new}} RPM</p>
+                </details>
+                <br>
+                {% endif %}
+
+                {% if v_op != 'm/s' %}
+                <details style="border:2px solid #009FE8; width:100%;">
+                    <summary><b>Convert {{v}} "{{v_op}}" to "m/s" </b></summary>
+                    <p>Belt velocity = {{text_v}} </p>
+                    <p>Belt velocity = {{v_new}} m/s</p>
+                </details>
+                <br>
+                {% endif %}
+
+                <p><b>Put values into formula</b></p>
+                <p><b>Driver pulley diameter(d₁) = 60 * {{v}} / π * {{w}}</b></p>
+                <p><b>Driver pulley diameter(d₁) = {{d}} m</b></p>
+
+
+            </div>
+
+        </div>
+        {% endif %}
+
+        {% if given_form4 == "form10" and p4 and v4 %}
+        <div class="card" id="belt-tension">
+            <div class="card-header">
+                <h2 class="h2">Steps to Find Belt tension :</h2>
+            </div>
+
+            <div class="card-body">
+                <strong>Belt tension formula:-</strong>
+                <br>
+                <p class="btn btn-outline-secondary active">F = P / v</p>
+                <br>
+                <strong>where:</strong>
+                    <ul>
+                        <li>F is the belt tension,</li>
+                        <li>P is the transmitting power,</li>
+                        <li>v is the belt velocity.</li>
+                    </ul>
+                <p><b>Input values are:-</b></p>
+                <p>P = {{p4}} {{p4_op}}</p>
+                <p>v = {{v4}} {{v4_op}}</p>
+
+                {% if p4_op != 'W' %}
+                <details style="border:2px solid #009FE8; width:100%;">
+                    <summary><b>Convert {{p4}} "{{p4_op}}" to "W" </b></summary>
+                    <p>Transmitting power = {{text_p4}} </p>
+                    <p>Transmitting power = {{p4_new}} W</p>
+                </details>
+                <br>
+                {% endif %}
+
+                {% if v4_op != 'm/s' %}
+                <details style="border:2px solid #009FE8; width:100%;">
+                    <summary><b>Convert {{v4}} "{{v4_op}}" to "m/s" </b></summary>
+                    <p>Belt velocity = {{text_v4}} </p>
+                    <p>Belt velocity = {{v4_new}} m/s</p>
+                </details>
+                <br>
+                {% endif %}
+
+                <p><b>Put values into formula</b></p>
+                <p><b>Belt tension(F) = {{p4}} / {{v4}}</b></p>
+                <p><b>Belt tension(F) = {{bt}} N</b></p>
+
+
+            </div>
+
+        </div>
+        {% endif %}
+
+        {% if given_form4 == "form11" and bt and v4 %}
+        <div class="card" id="transmitting-power4">
+            <div class="card-header">
+                <h2 class="h2">Steps to Find Transmitting power :</h2>
+            </div>
+
+            <div class="card-body">
+                <strong>Transmitting power formula:-</strong>
+                <br>
+                <p class="btn btn-outline-secondary active">P = F * v</p>
+                <br>
+                <strong>where:</strong>
+                    <ul>
+                        <li>F is the belt tension,</li>
+                        <li>P is the transmitting power,</li>
+                        <li>v is the belt velocity.</li>
+                    </ul>
+                <p><b>Input values are:-</b></p>
+                <p>F = {{bt}} {{bt_op}}</p>
+                <p>v = {{v4}} {{v4_op}}</p>
+
+                {% if bt_op != 'N' %}
+                <details style="border:2px solid #009FE8; width:100%;">
+                    <summary><b>Convert {{bt}} "{{bt_op}}" to "N" </b></summary>
+                    <p>Belt tension = {{text_bt}} </p>
+                    <p>Belt tension = {{bt_new}} N</p>
+                </details>
+                <br>
+                {% endif %}
+
+                {% if v4_op != 'm/s' %}
+                <details style="border:2px solid #009FE8; width:100%;">
+                    <summary><b>Convert {{v4}} "{{v4_op}}" to "m/s" </b></summary>
+                    <p>Belt velocity = {{text_v4}} </p>
+                    <p>Belt velocity = {{v4_new}} m/s</p>
+                </details>
+                <br>
+                {% endif %}
+
+                <p><b>Put values into formula</b></p>
+                <p><b>Transmitting power(P) = {{bt}} * {{v}}</b></p>
+                <p><b>Transmitting power(P) = {{p4}} W</b></p>
+
+
+            </div>
+
+        </div>
+        {% endif %}
+
+        {% if given_form4 == "form12" and bt and p4 %}
+        <div class="card" id="belt-velocity4">
+            <div class="card-header">
+                <h2 class="h2">Steps to Find Belt velocity :</h2>
+            </div>
+
+            <div class="card-body">
+                <strong>Belt velocity formula:-</strong>
+                <br>
+                <p class="btn btn-outline-secondary active">v = P / F</p>
+                <br>
+                <strong>where:</strong>
+                    <ul>
+                        <li>F is the belt tension,</li>
+                        <li>P is the transmitting power,</li>
+                        <li>v is the belt velocity.</li>
+                    </ul>
+                <p><b>Input values are:-</b></p>
+                <p>F = {{bt}} {{bt_op}}</p>
+                <p>P = {{p4}} {{p4_op}}</p>
+
+                {% if bt_op != 'N' %}
+                <details style="border:2px solid #009FE8; width:100%;">
+                    <summary><b>Convert {{bt}} "{{bt_op}}" to "N" </b></summary>
+                    <p>Belt tension = {{text_bt}} </p>
+                    <p>Belt tension = {{bt_new}} N</p>
+                </details>
+                <br>
+                {% endif %}
+
+                {% if p4_op != 'W' %}
+                <details style="border:2px solid #009FE8; width:100%;">
+                    <summary><b>Convert {{p4}} "{{p4_op}}" to "W" </b></summary>
+                    <p>Transmitting power = {{text_p4}} </p>
+                    <p>Transmitting power = {{p4_new}} W</p>
+                </details>
+                <br>
+                {% endif %}
+
+
+                <p><b>Put values into formula</b></p>
+                <p><b>Belt velocity(v) = {{p4}} / {{bt}}</b></p>
+                <p><b>Belt velocity(v) = {{v4}} m/s</b></p>
+
+
+            </div>
+
+        </div>
+        {% endif %}
+
+        {% if given_form5 == "form13" and d1 and d2 and D %}
+        <div class="card" id="belt-length">
+            <div class="card-header">
+                <h2 class="h2">Steps to Find Belt length :</h2>
+            </div>
+
+            <div class="card-body">
+                <strong>Belt length formula:-</strong>
+                <br>
+                <p class="btn btn-outline-secondary active">L = (d₁ * π / 2) + (d₂ * π / 2) + 2D + ((d₁ - d₂)² / 4D)</p>
+                <br>
+                <strong>where:</strong>
+                    <ul>
+                        <li>L is the belt length,</li>
+                        <li>d₁ is the driver pulley diameter,</li>
+                        <li>d₂ is the driver pulley diameter,</li>
+                        <li>D is the distance between pulley centers.</li>
+                    </ul>
+                <p><b>Input values are:-</b></p>
+                <p>d₁ = {{d1}} {{d1_op}}</p>
+                <p>d₂ = {{d2}} {{d2_op}}</p>
+                <p>D = {{D}} {{D_op}}</p>
+
+                {% if d1_op != 'm' %}
+                <details style="border:2px solid #009FE8; width:100%;">
+                    <summary><b>Convert {{d1}} "{{d1_op}}" to "m" </b></summary>
+                    <p>Driver pulley diameter = {{text_d1}} </p>
+                    <p>Driver pulley diameter = {{d1_new}} m</p>
+                </details>
+                <br>
+                {% endif %}
+
+                {% if d2_op != 'm' %}
+                <details style="border:2px solid #009FE8; width:100%;">
+                    <summary><b>Convert {{d2}} "{{d2_op}}" to "m" </b></summary>
+                    <p>Driver pulley diameter = {{text_d2}} </p>
+                    <p>Driver pulley diameter = {{d2_new}} m</p>
+                </details>
+                <br>
+                {% endif %}
+
+                {% if D_op != 'm' %}
+                <details style="border:2px solid #009FE8; width:100%;">
+                    <summary><b>Convert {{D}} "{{D_op}}" to "m" </b></summary>
+                    <p>Distance between pulley centers = {{text_D}} </p>
+                    <p>Distance between pulley centers = {{D_new}} m</p>
+                </details>
+                <br>
+                {% endif %}
+
+
+                <p><b>Put values into formula</b></p>
+                <p><b>Belt length(L) = ({{d1}} * π / 2) + ({{d2}} * π / 2) + 2*{{D}} + (({{d2}} - {{d2}})² / 4*{{D}})</b></p>
+                <p><b>Belt length(L) = {{L}} m</b></p>
+
+
+            </div>
+
+        </div>
+        {% endif %}
+
+
+    </div>
+</div>
+
+<script>
+    var validNumber = new RegExp(/^\d*\.?-?\d*$/);
+    var fist_input = document.getElementById("inlineFormInputGroup").value;
+    function validateNumber(elem) {
+        console.log(elem)
+        if (validNumber.test(elem.value)) {
+            fist_input = elem.value;
+        } else {
+            elem.value = fist_input;
+        }
+    }
+</script>
+
+<script>
+    function myFunction() {
+
+        {% if given_form1 == "form1" %}
+
+        document.getElementsByName("v1")[0].value = "";
+        document.getElementsByName("p1")[0].value = "";
+        document.getElementsByName("v1_op")[0].value = "RPM";
+        document.getElementsByName("p1_op")[0].value = "W";
+        document.getElementById("clear").innerHTML = "";
+
+        {% endif %}
+
+
+        {% if given_form1 == "form2" %}
+
+        document.getElementsByName("t1")[0].value = "";
+        document.getElementsByName("p1")[0].value = "";
+        document.getElementsByName("t1_op")[0].value = "Nm";
+        document.getElementsByName("p1_op")[0].value = "W";
+        document.getElementById("clear").innerHTML = "";
+
+        {% endif %}
+
+        {% if given_form1 == "form3" %}
+
+        document.getElementsByName("t1")[0].value = "";
+        document.getElementsByName("v1")[0].value = "";
+        document.getElementsByName("t1_op")[0].value = "Nm";
+        document.getElementsByName("v1_op")[0].value = "RPM";
+        document.getElementById("clear").innerHTML = "";
+
+        {% endif %}
+
+        {% if given_form2 == "form4" %}
+
+        document.getElementsByName("v2")[0].value = "";
+        document.getElementsByName("p2")[0].value = "";
+        document.getElementsByName("v2_op")[0].value = "RPM";
+        document.getElementsByName("p2_op")[0].value = "W";
+        document.getElementById("clear").innerHTML = "";
+
+        {% endif %}
+
+        {% if given_form2 == "form5" %}
+
+        document.getElementsByName("t2")[0].value = "";
+        document.getElementsByName("p2")[0].value = "";
+        document.getElementsByName("t2_op")[0].value = "Nm";
+        document.getElementsByName("p2_op")[0].value = "W";
+        document.getElementById("clear").innerHTML = "";
+
+        {% endif %}
+
+        {% if given_form2 == "form6" %}
+
+        document.getElementsByName("t2")[0].value = "";
+        document.getElementsByName("v2")[0].value = "";
+        document.getElementsByName("t2_op")[0].value = "Nm";
+        document.getElementsByName("v2_op")[0].value = "RPM";
+        document.getElementById("clear").innerHTML = "";
+
+        {% endif %}
+
+        {% if given_form3 == "form7" %}
+
+        document.getElementsByName("w")[0].value = "";
+        document.getElementsByName("d")[0].value = "";
+        document.getElementsByName("d_op")[0].value = "m";
+        document.getElementsByName("w_op")[0].value = "RPM";
+        document.getElementById("clear").innerHTML = "";
+
+        {% endif %}
+
+        {% if given_form3 == "form8" %}
+
+        document.getElementsByName("v")[0].value = "";
+        document.getElementsByName("d")[0].value = "";
+        document.getElementsByName("d_op")[0].value = "m";
+        document.getElementsByName("v_op")[0].value = "m/s";
+        document.getElementById("clear").innerHTML = "";
+
+        {% endif %}
+
+
+        {% if given_form3 == "form9" %}
+
+        document.getElementsByName("v")[0].value = "";
+        document.getElementsByName("w")[0].value = "";
+        document.getElementsByName("d_op")[0].value = "m";
+        document.getElementsByName("w_op")[0].value = "RPM";
+        document.getElementById("clear").innerHTML = "";
+
+        {% endif %}
+
+        {% if given_form4 == "form10" %}
+
+        document.getElementsByName("p4")[0].value = "";
+        document.getElementsByName("v4")[0].value = "";
+        document.getElementsByName("p4_op")[0].value = "W";
+        document.getElementsByName("v4_op")[0].value = "m/s";
+        document.getElementById("clear").innerHTML = "";
+
+        {% endif %}
+
+        {% if given_form4 == "form11" %}
+
+        document.getElementsByName("bt")[0].value = "";
+        document.getElementsByName("v4")[0].value = "";
+        document.getElementsByName("bt_op")[0].value = "N";
+        document.getElementsByName("v4_op")[0].value = "m/s";
+        document.getElementById("clear").innerHTML = "";
+
+        {% endif %}
+
+        {% if given_form4 == "form12" %}
+
+        document.getElementsByName("bt")[0].value = "";
+        document.getElementsByName("p4")[0].value = "";
+        document.getElementsByName("bt_op")[0].value = "N";
+        document.getElementsByName("p4_op")[0].value = "W";
+        document.getElementById("clear").innerHTML = "";
+
+        {% endif %}
+
+        {% if given_form5 == "form13" %}
+
+        document.getElementsByName("d1")[0].value = "";
+        document.getElementsByName("d2")[0].value = "";
+        document.getElementsByName("D")[0].value = "";
+        document.getElementsByName("d1_op")[0].value = "m";
+        document.getElementsByName("d2_op")[0].value = "m";
+        document.getElementsByName("D_op")[0].value = "m";
+        document.getElementById("clear").innerHTML = "";
+
+        {% endif %}
+
+
+
+    }
+</script>
+<br>
+
+
+{%endblock%}
